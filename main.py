@@ -12,17 +12,28 @@ def parse_args():
     parser = argparse.ArgumentParser()
     parser.add_argument("--model", required=True)
     parser.add_argument("--model_args", default="")
-    parser.add_argument("--tasks", default=None, choices=utils.MultiChoice(tasks.ALL_TASKS))
+    parser.add_argument("--tokenizer", default=None)
+    parser.add_argument(
+        "--tasks", default=None, choices=utils.MultiChoice(tasks.ALL_TASKS)
+    )
     parser.add_argument("--provide_description", action="store_true")
     parser.add_argument("--num_fewshot", type=int, default=0)
     parser.add_argument("--batch_size", type=str, default=None)
-    parser.add_argument("--max_batch_size", type=int, default=None,
-                        help="Maximal batch size to try with --batch_size auto")
+    parser.add_argument(
+        "--max_batch_size",
+        type=int,
+        default=None,
+        help="Maximal batch size to try with --batch_size auto",
+    )
     parser.add_argument("--device", type=str, default=None)
     parser.add_argument("--output_path", default=None)
-    parser.add_argument("--limit", type=float, default=None,
-                        help="Limit the number of examples per task. "
-                             "If <1, limit is a percentage of the total number of examples.")
+    parser.add_argument(
+        "--limit",
+        type=float,
+        default=None,
+        help="Limit the number of examples per task. "
+        "If <1, limit is a percentage of the total number of examples.",
+    )
     parser.add_argument("--data_sampling", type=float, default=None)
     parser.add_argument("--no_cache", action="store_true")
     parser.add_argument("--decontamination_ngrams_path", default=None)
@@ -71,6 +82,7 @@ def main():
         check_integrity=args.check_integrity,
         write_out=args.write_out,
         output_base_path=args.output_base_path,
+        tokenizer=args.tokenizer,
     )
 
     dumped = json.dumps(results, indent=2)

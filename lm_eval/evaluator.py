@@ -30,6 +30,7 @@ def simple_evaluate(
     decontamination_ngrams_path=None,
     write_out=False,
     output_base_path=None,
+    tokenizer=None,
 ):
     """Instantiate and evaluate a model on a list of tasks.
 
@@ -74,14 +75,21 @@ def simple_evaluate(
         if model_args is None:
             model_args = ""
         lm = lm_eval.models.get_model(model).create_from_arg_string(
-            model_args, {"batch_size": batch_size, "max_batch_size": max_batch_size, "device": device}
+            model_args,
+            {
+                "batch_size": batch_size,
+                "max_batch_size": max_batch_size,
+                "device": device,
+                "tokenizer": tokenizer,
+                "trust_remote_code": True,
+            },
         )
     elif isinstance(model, transformers.PreTrainedModel):
         lm = lm_eval.models.get_model("hf-causal")(
-                pretrained=model,
-                batch_size=batch_size,
-                max_batch_size=max_batch_size,
-                )
+            pretrained=model,
+            batch_size=batch_size,
+            max_batch_size=max_batch_size,
+        )
         no_cache = True
     else:
         assert isinstance(model, lm_eval.base.LM)
@@ -125,7 +133,9 @@ def simple_evaluate(
         "model_args": model_args,
         "num_fewshot": num_fewshot,
         "batch_size": batch_size,
-        "batch_sizes": list(lm.batch_sizes.values()) if hasattr(lm, "batch_sizes") else [],
+        "batch_sizes": list(lm.batch_sizes.values())
+        if hasattr(lm, "batch_sizes")
+        else [],
         "device": device,
         "no_cache": no_cache,
         "limit": limit,

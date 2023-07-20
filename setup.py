@@ -13,9 +13,7 @@ setuptools.setup(
     long_description_content_type="text/markdown",
     url="https://github.com/EleutherAI/lm-evaluation-harness",
     packages=setuptools.find_packages(),
-    package_data={
-        "lm_eval": ["**/*.json"]
-    },
+    package_data={"lm_eval": ["**/*.json"]},
     include_package_data=True,
     classifiers=[
         "Development Status :: 3 - Alpha",
@@ -23,7 +21,7 @@ setuptools.setup(
         "License :: OSI Approved :: MIT License",
         "Operating System :: OS Independent",
     ],
-    python_requires=">=3.9",
+    python_requires=">=3.8",
     install_requires=[
         "datasets>=2.0.0",
         "jsonlines",
@@ -43,6 +41,11 @@ setuptools.setup(
         "transformers>=4.1",
         "zstandard",
         "accelerate>=0.17.1",
+        "optimum-intel>=1.9.3",
+        "openvino>=2023.0.1",
+        "openvino-dev>=2023.0.1",
+        "onnx>=1.14.0",
+        'importlib_resources>=6.0.0; python_version < "3.9.0"',
     ],
     extras_require={
         "dev": ["black", "flake8", "pre-commit", "pytest", "pytest-cov"],
