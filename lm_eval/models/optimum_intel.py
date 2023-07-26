@@ -49,20 +49,38 @@ class OptimumIntelAutoCausalLM(BaseLM):
         if batch_size == 'auto': 
             self.batch_size_per_gpu = batch_size
         else:
-            self.batch_size_per_gpu = int(batch_size) 
+            self.batch_size_per_gpu = int(batch_size)
+            
+        self._DEFAULT_MAX_LENGTH = 512
+
 
     @property
     def eot_token_id(self):
         # we use EOT because end of *text* is more accurate for what we're doing than end of *sentence*
         return self.tokenizer.eos_token_id
 
+
     @property
-    def max_length(self):
-        try:
-            return self.model.config.n_ctx
-        except AttributeError:
-            # gptneoconfig doesn't have n_ctx apparently
-            return self.model.config.max_position_embeddings
+    def max_length(self) -> int:
+        """Return the maximum sequence length of the model.
+        NOTE: Different model configurations have different max sequence length
+        attribute names.
+            - n_positions: (CTRLConfig, T5Config)
+            - max_position_embeddings: (BartConfig, RoFormerConfig)
+            - n_ctx: (GPT2Config)
+        NOTE: For relative position encoded models you should specify the max
+        sequence length of the model in the constructor via `max_length`.
+        """
+        # Try to get the sequence length from the model config.
+        seqlen_config_attrs = ("n_positions", "max_position_embeddings", "n_ctx")
+        for attr in seqlen_config_attrs:
+            if hasattr(self.model.config, attr):
+                return getattr(self.model.config, attr)
+        if hasattr(self.tokenizer, "model_max_length"):
+            if self.tokenizer.model_max_length == 1000000000000000019884624838656:
+                return self._DEFAULT_MAX_LENGTH
+            return self.tokenizer.model_max_length
+        return self._DEFAULT_MAX_LENGTH
 
     @property
     def max_gen_toks(self):
