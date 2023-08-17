@@ -8,6 +8,7 @@ from lm_eval.base import BaseLM
 
 
 class OptimumIntelAutoCausalLM(BaseLM):
+    _DEFAULT_MAX_LENGTH: int = 2048
     def __init__(
         self,
         device="cpu",
@@ -50,8 +51,6 @@ class OptimumIntelAutoCausalLM(BaseLM):
             self.batch_size_per_gpu = batch_size
         else:
             self.batch_size_per_gpu = int(batch_size)
-            
-        self._DEFAULT_MAX_LENGTH = 512
 
 
     @property
