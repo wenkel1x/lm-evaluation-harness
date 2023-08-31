@@ -31,11 +31,13 @@ class OptimumIntelAutoCausalLM(BaseLM):
 
         revision = revision + ("/" + subfolder if subfolder is not None else "")
 
+        ov_config = {'PERFORMANCE_HINT': 'LATENCY', 'NUM_STREAMS': '1', "CACHE_DIR": ""}
         self.model = OVModelForCausalLM.from_pretrained(
             pretrained,
             revision=revision,
             trust_remote_code=trust_remote_code,
             use_cache=True,
+            ov_config=ov_config
         )
 
         self.tokenizer = transformers.AutoTokenizer.from_pretrained(

@@ -92,7 +92,11 @@ def metric_max_over_ground_truths(metric_fn, prediction, ground_truths):
 
 
 def perplexity(items):
-    return math.exp(-mean(items))
+    try:
+        res = math.exp(-mean(items))
+    except:
+        res = float('inf')
+    return res
 
 
 def weighted_mean(items):
