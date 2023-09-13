@@ -20,18 +20,19 @@ class OptimumIntelAutoCausalLM(BaseLM):
         batch_size=1,
         load_in_8bit: Optional[bool] = False,
         trust_remote_code: Optional[bool] = True,
+        precision_hint=None,
     ):
         super().__init__()
-
         assert isinstance(device, str)
         assert isinstance(pretrained, str)
         assert isinstance(batch_size, (int,str))
+        assert isinstance(precision_hint, str)
 
         self._device = "cpu"
 
         revision = revision + ("/" + subfolder if subfolder is not None else "")
 
-        ov_config = {'PERFORMANCE_HINT': 'LATENCY', 'NUM_STREAMS': '1', "CACHE_DIR": ""}
+        ov_config = {'PERFORMANCE_HINT': 'LATENCY', 'NUM_STREAMS': '1', "CACHE_DIR": "", 'INFERENCE_PRECISION_HINT': str(precision_hint)}
         self.model = OVModelForCausalLM.from_pretrained(
             pretrained,
             revision=revision,

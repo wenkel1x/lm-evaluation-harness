@@ -41,13 +41,13 @@ def parse_args():
     parser.add_argument("--check_integrity", action="store_true")
     parser.add_argument("--write_out", action="store_true", default=False)
     parser.add_argument("--output_base_path", type=str, default=None)
+    parser.add_argument("--precision_hint", choices=["f16","f32","bf16"], default=None, required=True)
 
     return parser.parse_args()
 
 
 def main():
     args = parse_args()
-
     assert not args.provide_description  # not implemented
 
     if args.limit:
@@ -83,6 +83,7 @@ def main():
         write_out=args.write_out,
         output_base_path=args.output_base_path,
         tokenizer=args.tokenizer,
+        precision_hint=args.precision_hint
     )
 
     dumped = json.dumps(results, indent=2)

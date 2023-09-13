@@ -31,6 +31,7 @@ def simple_evaluate(
     write_out=False,
     output_base_path=None,
     tokenizer=None,
+    precision_hint=None,
 ):
     """Instantiate and evaluate a model on a list of tasks.
 
@@ -82,6 +83,7 @@ def simple_evaluate(
                 "device": device,
                 "tokenizer": tokenizer,
                 "trust_remote_code": True,
+                "precision_hint": precision_hint,
             },
         )
     elif isinstance(model, transformers.PreTrainedModel):
@@ -131,6 +133,7 @@ def simple_evaluate(
     results["config"] = {
         "model": model_name,
         "model_args": model_args,
+        "INFERENCE_PRECISION_HINT": precision_hint,
         "num_fewshot": num_fewshot,
         "batch_size": batch_size,
         "batch_sizes": list(lm.batch_sizes.values())
